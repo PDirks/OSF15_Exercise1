@@ -10,9 +10,22 @@
 
 
 	//TODO FUNCTION COMMENT
+/*
+ * PURPOSE: Interprets input and creates a command
+ * INPUTS:
+ *      User input to analyze, input
+ *      Command to populate, cmd
+ * RETURN:
+ *      If there is an error parsing input, return false.
+ *      Else, return true.
+ **/
 bool parse_user_input (const char* input, Commands_t** cmd) {
 	
 	//TODO ERROR CHECK INCOMING PARAMETERS
+        if(!input || !cmd){
+                perror("parse_user_input: bad input\n");
+                return false;
+        }
 
 	char *string = strdup(input);
 	
@@ -34,18 +47,29 @@ bool parse_user_input (const char* input, Commands_t** cmd) {
 	}
 	free(string);
 	return true;
-}
+}// end parse_user_input
 
 	//TODO FUNCTION COMMENT
+/*
+ * PURPOSE:
+ * INPUTS:
+ * RETURN:
+ **/
 void destroy_commands(Commands_t** cmd) {
 
 	//TODO ERROR CHECK INCOMING PARAMETERS
-	
+        if(!cmd){
+                perror("destroy_commands: bad input");
+                return;
+        }
+
 	for (int i = 0; i < (*cmd)->num_cmds; ++i) {
-		free((*cmd)->cmds[i]);
+                if((*cmd)->cmds[i]){
+                        free((*cmd)->cmds[i]);
+                }
 	}
 	free((*cmd)->cmds);
 	free((*cmd));
 	*cmd = NULL;
-}
+}// end destroy_commands
 
