@@ -51,9 +51,11 @@ bool parse_user_input (const char* input, Commands_t** cmd) {
 
 	//TODO FUNCTION COMMENT
 /*
- * PURPOSE:
+ * PURPOSE: Free up cmds
  * INPUTS:
+ *      Command master-list to free, cmd
  * RETURN:
+ *      void
  **/
 void destroy_commands(Commands_t** cmd) {
 

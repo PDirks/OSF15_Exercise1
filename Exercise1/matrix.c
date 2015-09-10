@@ -113,9 +113,14 @@ bool duplicate_matrix (Matrix_t* src, Matrix_t* dest) {
 
 	//TODO FUNCTION COMMENT
 /*
- * PURPOSE: 
+ * PURPOSE: Preform a bitwise shift on the members of an array
  * INPUTS:
+ *		Direction the shift should move, direction
+ *		Matrix to preform shift on, a
+ *		Amount to shift by, shift
  * RETURN:
+ *		If bad inputs are given, return false.
+ *		Else, return true.
  **/
 bool bitwise_shift_matrix (Matrix_t* a, char direction, unsigned int shift) {
 	
@@ -358,10 +363,10 @@ bool write_matrix (const char* matrix_output_filename, Matrix_t* m) {
 	
 	//TODO ERROR CHECK INCOMING PARAMETERS
 
-        if(!matrix_output_filename || !m || !m->name || !m->rows || !m->cols){
-                perror("write_matrix: bad input\n");
-                return false;
-        }
+    if(!matrix_output_filename || !m || !m->name || !m->rows || !m->cols){
+            perror("write_matrix: bad input\n");
+            return false;
+    }
 
 	int fd = open (matrix_output_filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	/* ERROR HANDLING USING errorno*/
@@ -386,9 +391,15 @@ bool write_matrix (const char* matrix_output_filename, Matrix_t* m) {
 	unsigned int numberOfBytes = sizeof(unsigned int) + (sizeof(unsigned int)  * 2) + name_len + sizeof(unsigned int) * m->rows * m->cols + 1;
 	/* Allocate the output_buffer in bytes
 	 * IMPORTANT TO UNDERSTAND THIS WAY OF MOVING MEMORY
+	 * --------------------------------------------------
+	 * Here we create an output buffer big enough to hold all out-going memory (+ EOF)
 	 */
 	unsigned char* output_buffer = calloc(numberOfBytes,sizeof(unsigned char));
 	unsigned int offset = 0;
+	/*
+	 * start copying data from the matrix into the output buffer
+	 * increment the offset with each copy to prevent unwanted overwriting
+	 */
 	memcpy(&output_buffer[offset], &name_len, sizeof(unsigned int)); // IMPORTANT C FUNCTION TO KNOW
 	offset += sizeof(unsigned int);	
 	memcpy(&output_buffer[offset], m->name,name_len);
@@ -492,6 +503,7 @@ unsigned int add_matrix_to_array (Matrix_t** mats, Matrix_t* new_matrix, unsigne
 	if ( mats[pos] ) {
 		destroy_matrix(&mats[pos]);
 	} 
+	printf("new matrix at %lu\n", pos);
 	mats[pos] = new_matrix;
 	current_position++;
 	return pos;

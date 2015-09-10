@@ -288,11 +288,11 @@ void destroy_remaining_heap_allocations(Matrix_t **mats, unsigned int num_mats) 
         int i;
         for (i = 0; i < num_mats-1; ++i){
                 if(mats[i]){
-                        printf("boop\n");
-                        //free((mats[i])->data);
+                        printf("boop %d\n",i);
+                        free((mats[i])->data);
                         free(mats[i]);
                 }
         }
-        destroy_matrix(mats);
+        //destroy_matrix(mats);
         mats = NULL;
 }// end destroy_remaining_heap_allocations
