@@ -257,7 +257,7 @@ void run_commands (Commands_t* cmd, Matrix_t** mats, unsigned int num_mats) {
  * PURPOSE: find a Matrix given a name to search for
  * INPUTS:
  *      List of all arrays to search, mats
- *      Number of matrixes in the master-list, num_mats
+ *      Number of matrices in the master-list, num_mats
  *      Name to search for, target
  * RETURN:
  *      If found, return the index.
@@ -282,21 +282,20 @@ unsigned int find_matrix_given_name (Matrix_t** mats, unsigned int num_mats, con
 }// end find_matrix_given_name
 
 /*
- * PURPOSE: Free up all Matrixes remaining
+ * PURPOSE: Free up all Matrices remaining
  * INPUTS:
- *      Master-list of matrixes, mats
+ *      Master-list of matrices, mats
  *      Number of matrices in mater-list, num_mats
  * RETURN:
  *      void
  **/
 void destroy_remaining_heap_allocations(Matrix_t **mats, unsigned int num_mats) {
-	printf("cleaning up mats...\nmats count: %d\n", num_mats);//debug
     if(!mats || num_mats < 0){
         perror("destroy_remaining_heap_allocations: bad input\n");
         return;
     }
     if(!(*mats)){
-    	free(mats);
+//    	free(mats);
     }
     
 	// COMPLETE MISSING MEMORY CLEARING HERE

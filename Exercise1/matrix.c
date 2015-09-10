@@ -30,10 +30,9 @@ void load_matrix (Matrix_t* m, unsigned int* data);
  *  else false for an error in the process.
  *
  **/
-bool create_matrix (Matrix_t** new_matrix, const char* name, const unsigned int rows,
-						const unsigned int cols) {
+bool create_matrix (Matrix_t** new_matrix, const char* name, const unsigned int rows, const unsigned int cols) {
 
-	if( !name  ){
+	if( !new_matrix || !name  ){
 		perror("create_matrix: bad input\n");
 		return false;
 	}
@@ -73,14 +72,14 @@ void destroy_matrix (Matrix_t** m) {
 }// end destory matrix
 
 /*
- * PURPOSE: compare memory blocks of two matrixes, to see if they are the same
+ * PURPOSE: compare memory blocks of two matrices, to see if they are the same
  * INPUTS: 
- *      two matrixes to compare
+ *      two matrices to compare
  * RETURN:
  *      if blocks of memory are the same, return true. Else, return false.
  **/
 bool equal_matrices (Matrix_t* a, Matrix_t* b) {	
-	if (!a || !b || !a->data || !b->data || !a->rows || !a->cols) {
+	if (!a || !b || !a->data || !b->data ) {
         perror("equal_matrices: bad input\n");
 		return false;	
 	}
@@ -102,7 +101,7 @@ bool equal_matrices (Matrix_t* a, Matrix_t* b) {
  *      Else, return false.
  **/
 bool duplicate_matrix (Matrix_t* src, Matrix_t* dest) {
-	if (!src || dest) {
+	if (!src || !dest || !src->data ) {
         perror("duplicate_matrix: bad input\n");
 		return false;
 	}
@@ -126,7 +125,7 @@ bool duplicate_matrix (Matrix_t* src, Matrix_t* dest) {
  **/
 bool bitwise_shift_matrix (Matrix_t* a, char direction, unsigned int shift) {
 	
-	if (!a) {
+	if ( !a || !a->data ) {
         perror("bitwise_shift_matrix: bad input\n");
 		return false;
 	}
@@ -165,7 +164,7 @@ bool bitwise_shift_matrix (Matrix_t* a, char direction, unsigned int shift) {
  *      Else, return true.
  **/
 bool add_matrices (Matrix_t* a, Matrix_t* b, Matrix_t* c) {
-	if ( !a || !b || !a->data || !b->data) {
+	if ( !a || !b || !c || !a->data || !b->data || !c->data ) {
         perror("add_matrices: bad input\n");
 		return false;
 	}
@@ -186,7 +185,7 @@ bool add_matrices (Matrix_t* a, Matrix_t* b, Matrix_t* c) {
  *      void
  **/
 void display_matrix (Matrix_t* m) {
-    if( !m ){
+    if( !m || !m->data ){
         perror("display_matrix: bad input");
         return;
     }
@@ -468,7 +467,7 @@ bool random_matrix(Matrix_t* m, unsigned int start_range, unsigned int end_range
  *      void
  **/
 void load_matrix (Matrix_t* m, unsigned int* data) {
-    if(!data || !m || !m->rows || !m->cols){
+    if(!data || !m || !m->data ){
         perror("load_matrix: bad input\n");
         return;
     }
@@ -487,14 +486,16 @@ void load_matrix (Matrix_t* m, unsigned int* data) {
  *      Else, return the pos of the new matrix
  **/
 unsigned int add_matrix_to_array (Matrix_t** mats, Matrix_t* new_matrix, unsigned int num_mats) {
-	if( !mats || !(*mats)!new_matrix )
+	if( !mats || !new_matrix ){
+		perror("add_matrix_to_array: bad input\n");
+		return -1;
+	}
 
 	static long int current_position = 0;
 	const long int pos = current_position % num_mats;
 	if ( mats[pos] ) {
 		destroy_matrix(&mats[pos]);
 	} 
-	printf("new matrix at %lu\n", pos);
 	mats[pos] = new_matrix;
 	current_position++;
 	return pos;
