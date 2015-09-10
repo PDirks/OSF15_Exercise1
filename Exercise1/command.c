@@ -8,8 +8,6 @@
 #define MAX_CMD_COUNT 50
 #define MAX_CMD_LEN 25
 
-
-	//TODO FUNCTION COMMENT
 /*
  * PURPOSE: Interprets input and creates a command
  * INPUTS:
@@ -21,11 +19,10 @@
  **/
 bool parse_user_input (const char* input, Commands_t** cmd) {
 	
-	//TODO ERROR CHECK INCOMING PARAMETERS
-        if(!input || !cmd){
-                perror("parse_user_input: bad input\n");
-                return false;
-        }
+    if(!input || !cmd ){
+        perror("parse_user_input: bad input\n");
+        return false;
+    }
 
 	char *string = strdup(input);
 	
@@ -49,7 +46,6 @@ bool parse_user_input (const char* input, Commands_t** cmd) {
 	return true;
 }// end parse_user_input
 
-	//TODO FUNCTION COMMENT
 /*
  * PURPOSE: Free up cmds
  * INPUTS:
@@ -59,19 +55,18 @@ bool parse_user_input (const char* input, Commands_t** cmd) {
  **/
 void destroy_commands(Commands_t** cmd) {
 
-	//TODO ERROR CHECK INCOMING PARAMETERS
-        if(!cmd){
-                perror("destroy_commands: bad input");
-                return;
-        }
+    if(!cmd || !*(cmd)){
+        perror("destroy_commands: bad input");
+        return;
+    }
 
 	for (int i = 0; i < (*cmd)->num_cmds; ++i) {
-                if((*cmd)->cmds[i]){
-                        free((*cmd)->cmds[i]);
-                }
+//        if((*cmd)->cmds[i]){
+            free((*cmd)->cmds[i]);
+//        }
 	}
-	free((*cmd)->cmds);
-	free((*cmd));
+//	free((*cmd)->cmds);
+//	free((*cmd));
 	*cmd = NULL;
 }// end destroy_commands
 

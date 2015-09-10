@@ -33,7 +33,10 @@ void load_matrix (Matrix_t* m, unsigned int* data);
 bool create_matrix (Matrix_t** new_matrix, const char* name, const unsigned int rows,
 						const unsigned int cols) {
 
-	//TODO ERROR CHECK INCOMING PARAMETERS
+	if( !name  ){
+		perror("create_matrix: bad input\n");
+		return false;
+	}
 
 	*new_matrix = calloc(1,sizeof(Matrix_t));
 	if (!(*new_matrix)) {
@@ -62,11 +65,11 @@ bool create_matrix (Matrix_t** new_matrix, const char* name, const unsigned int 
  *      void
  **/
 void destroy_matrix (Matrix_t** m) {        
-        if( *m ){
-	        free((*m)->data);
-	        free(*m);
-	        *m = NULL;
-        }
+    if( *m ){
+        free((*m)->data);
+        free(*m);
+        *m = NULL;
+    }
 }// end destory matrix
 
 /*
@@ -78,7 +81,7 @@ void destroy_matrix (Matrix_t** m) {
  **/
 bool equal_matrices (Matrix_t* a, Matrix_t* b) {	
 	if (!a || !b || !a->data || !b->data || !a->rows || !a->cols) {
-                perror("equal_matrices: bad input\n");
+        perror("equal_matrices: bad input\n");
 		return false;	
 	}
 
@@ -99,8 +102,8 @@ bool equal_matrices (Matrix_t* a, Matrix_t* b) {
  *      Else, return false.
  **/
 bool duplicate_matrix (Matrix_t* src, Matrix_t* dest) {
-	if (!src) {
-                perror("duplicate_matrix: bad input\n");
+	if (!src || dest) {
+        perror("duplicate_matrix: bad input\n");
 		return false;
 	}
 	/*
@@ -111,7 +114,6 @@ bool duplicate_matrix (Matrix_t* src, Matrix_t* dest) {
 	return equal_matrices (src,dest);
 }// end duplicate_matrix
 
-	//TODO FUNCTION COMMENT
 /*
  * PURPOSE: Preform a bitwise shift on the members of an array
  * INPUTS:
@@ -124,9 +126,8 @@ bool duplicate_matrix (Matrix_t* src, Matrix_t* dest) {
  **/
 bool bitwise_shift_matrix (Matrix_t* a, char direction, unsigned int shift) {
 	
-	//TODO ERROR CHECK INCOMING PARAMETERS
 	if (!a) {
-                perror("bitwise_shift_matrix: bad input\n");
+        perror("bitwise_shift_matrix: bad input\n");
 		return false;
 	}
 
@@ -164,8 +165,8 @@ bool bitwise_shift_matrix (Matrix_t* a, char direction, unsigned int shift) {
  *      Else, return true.
  **/
 bool add_matrices (Matrix_t* a, Matrix_t* b, Matrix_t* c) {
-	if ((a->rows != b->rows && a->cols != b->cols) && a->data && b->data) {
-                perror("add_matrices: bad input\n");
+	if ( !a || !b || !a->data || !b->data) {
+        perror("add_matrices: bad input\n");
 		return false;
 	}
 
@@ -185,11 +186,10 @@ bool add_matrices (Matrix_t* a, Matrix_t* b, Matrix_t* c) {
  *      void
  **/
 void display_matrix (Matrix_t* m) {
-	//TODO ERROR CHECK INCOMING PARAMETERS
-        if( !m ){
-                perror("display_matrix: bad input");
-                return;
-        }
+    if( !m ){
+        perror("display_matrix: bad input");
+        return;
+    }
 	printf("\nMatrix Contents (%s):\n", m->name);
 	printf("DIM = (%u,%u)\n", m->rows, m->cols);
 	for (int i = 0; i < m->rows; ++i) {
@@ -201,7 +201,6 @@ void display_matrix (Matrix_t* m) {
 	printf("\n");
 }// end display_matrix
 
-	//TODO FUNCTION COMMENT
 /*
  * PURPOSE: Load a matrix from a file
  * INPUTS:
@@ -212,12 +211,10 @@ void display_matrix (Matrix_t* m) {
  *      Else, return true.
  **/
 bool read_matrix (const char* matrix_input_filename, Matrix_t** m) {
-	
-	//TODO ERROR CHECK INCOMING PARAMETERS
-        if( !matrix_input_filename ){
-                perror("read_matrix: bad input\n");
-                return false;
-        }
+    if( !matrix_input_filename || !m ){
+        perror("read_matrix: bad input\n");
+        return false;
+    }
 
 	int fd = open(matrix_input_filename,O_RDONLY);
 	if (fd < 0) {
@@ -259,7 +256,7 @@ bool read_matrix (const char* matrix_input_filename, Matrix_t** m) {
 		return false;
 	}
 	char name_buffer[50];
-	if (read (fd,name_buffer,sizeof(char) * name_len) != sizeof(char) * name_len) {
+	if (read (fd,name_buffer,sizeof(char) * name_len) != sizeof(char) * name_len) {		// segfaults around here...
 		printf("FAILED TO READ MATRIX NAME\n");
 		if (errno == EACCES ) {
 			perror("DO NOT HAVE ACCESS TO FILE\n");
@@ -362,12 +359,9 @@ bool read_matrix (const char* matrix_input_filename, Matrix_t** m) {
  *      Else, return true.
  **/
 bool write_matrix (const char* matrix_output_filename, Matrix_t* m) {
-	
-	//TODO ERROR CHECK INCOMING PARAMETERS
-
     if(!matrix_output_filename || !m || !m->name || !m->rows || !m->cols){
-            perror("write_matrix: bad input\n");
-            return false;
+	    perror("write_matrix: bad input\n");
+        return false;
     }
 
 	int fd = open (matrix_output_filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
@@ -450,12 +444,10 @@ bool write_matrix (const char* matrix_output_filename, Matrix_t* m) {
  *      Else, return true.
  **/
 bool random_matrix(Matrix_t* m, unsigned int start_range, unsigned int end_range) {
-	
-	//TODO ERROR CHECK INCOMING PARAMETERS
-        if(start_range > end_range){
-                perror("random_matrix: bad input\n");
-                return false;
-        }
+    if( !m || start_range > end_range){
+        perror("random_matrix: bad input\n");
+        return false;
+    }
 
 	for (unsigned int i = 0; i < m->rows; ++i) {
 		for (unsigned int j = 0; j < m->cols; ++j) {
@@ -476,17 +468,14 @@ bool random_matrix(Matrix_t* m, unsigned int start_range, unsigned int end_range
  *      void
  **/
 void load_matrix (Matrix_t* m, unsigned int* data) {
-	
-	//TODO ERROR CHECK INCOMING PARAMETERS
-        if(!data || !m->rows || !m->cols){
-                perror("load_matrix: bad input\n");
-                return;
-        }
+    if(!data || !m || !m->rows || !m->cols){
+        perror("load_matrix: bad input\n");
+        return;
+    }
 
 	memcpy(m->data,data,m->rows * m->cols * sizeof(unsigned int));
 }//end load_matrix
 
-	//TODO FUNCTION COMMENT
 /*
  * PURPOSE: 
  * INPUTS:
@@ -498,8 +487,8 @@ void load_matrix (Matrix_t* m, unsigned int* data) {
  *      Else, return the pos of the new matrix
  **/
 unsigned int add_matrix_to_array (Matrix_t** mats, Matrix_t* new_matrix, unsigned int num_mats) {
-	
-	//TODO ERROR CHECK INCOMING PARAMETERS
+	if( !mats || !(*mats)!new_matrix )
+
 	static long int current_position = 0;
 	const long int pos = current_position % num_mats;
 	if ( mats[pos] ) {
